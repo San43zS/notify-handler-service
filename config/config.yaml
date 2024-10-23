@@ -1,0 +1,15 @@
+AMQP:
+  HOST: "localhost"
+  PORT: "5672"
+  USER: "guest"
+  PASSWORD: "guest"
+
+  DRIVER: "amqp"
+  URLTEMPLATE: "://%s:%s@%s:%s/"
+
+db:
+  redis:
+    host: "localhost"
+    port: "6379"
+    password: "pass"
+    username: "redis"
