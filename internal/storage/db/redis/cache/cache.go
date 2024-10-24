@@ -1,7 +1,7 @@
 package cache
 
 import (
-	repo2 "Notify-handler-service/internal/storage/repo"
+	repo2 "Notify-handler-service/internal/storage/db/repo"
 	"context"
 	"errors"
 	"github.com/redis/go-redis/v9"

@@ -5,7 +5,7 @@ import (
 	notification2 "Notify-handler-service/internal/service/notification"
 	"Notify-handler-service/internal/storage/config"
 	cashRep "Notify-handler-service/internal/storage/db/redis/cache"
-	"Notify-handler-service/internal/storage/repo"
+	"Notify-handler-service/internal/storage/db/repo"
 	"context"
 	"github.com/redis/go-redis/v9"
 	"log"
