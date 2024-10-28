@@ -1,11 +1,9 @@
 package redis
 
 import (
-	"Notify-handler-service/internal/model/notification"
-	notification2 "Notify-handler-service/internal/service/notification"
 	"Notify-handler-service/internal/storage/config"
 	cashRep "Notify-handler-service/internal/storage/db/redis/cache"
-	"Notify-handler-service/internal/storage/db/repo"
+	"Notify-handler-service/internal/storage/repo"
 	"context"
 	"github.com/redis/go-redis/v9"
 	"log"
@@ -14,13 +12,11 @@ import (
 type Store interface {
 	Cache() repo.Cache
 	Close() error
-	Notification() notification2.Notification
 }
 
 type store struct {
-	cache  repo.Cache
-	db     *redis.Client
-	notify notification.Notification
+	cache repo.Cache
+	db    *redis.Client
 }
 
 func configure(db *redis.Client) Store {
@@ -57,8 +53,4 @@ func (s store) Close() error {
 
 func (s store) Cache() repo.Cache {
 	return s.cache
-}
-
-func (s store) Notification() notification2.Notification {
-	return s.Notification()
 }

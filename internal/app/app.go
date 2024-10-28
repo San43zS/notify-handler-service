@@ -36,7 +36,7 @@ func (a *App) Start(ctx context.Context) error {
 	}
 
 	//TODO:
-	//if err := srv.Run(ctx); err != nil {
+	//if err := srv.Start(ctx); err != nil {
 	//	return err
 	//}
 	log.Println("Server stopped")

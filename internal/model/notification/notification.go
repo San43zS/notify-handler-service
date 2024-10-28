@@ -3,8 +3,8 @@ package notification
 import "time"
 
 type Notification struct {
-	Id        int
-	Info      string
+	UserId    int
+	Data      string
 	TTL       time.Duration
-	CreatedAt int
+	CreatedAt time.Time
 }

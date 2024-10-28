@@ -1,7 +1,7 @@
 package cache
 
 import (
-	repo2 "Notify-handler-service/internal/storage/db/repo"
+	repo2 "Notify-handler-service/internal/storage/repo"
 	"context"
 	"errors"
 	"github.com/redis/go-redis/v9"
@@ -32,7 +32,6 @@ func New(db *redis.Client) repo2.Cache {
 func (r repo) Get(ctx context.Context, key string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, requestTimeout)
 	defer cancel()
-
 	val, err := r.db.Get(ctx, key).Result()
 	if err != nil {
 		if errors.Is(err, redis.Nil) {

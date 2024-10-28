@@ -1,12 +1,12 @@
 package service
 
 import (
-	notification2 "Notify-handler-service/internal/service/notification"
+	"Notify-handler-service/internal/handler/notification"
 	"Notify-handler-service/internal/storage"
 )
 
 type Service interface {
-	Notification() notification2.Notification
+	Notification() notification.Notification
 }
 
 type service struct {
@@ -19,6 +19,6 @@ func New(repos storage.Storage) Service {
 	}
 }
 
-func (s *service) Notification() notification2.Notification {
+func (s *service) Notification() notification.Notification {
 	return s.storage.Notification()
 }
