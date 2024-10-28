@@ -8,7 +8,7 @@ import (
 
 func (h *handler) Receive(ctx context.Context, m []byte) error {
 
-	recMSG, err := msg2.New(m).Parse()
+	recMSG, err := msg2.New().Parse(m)
 	if err != nil {
 		return fmt.Errorf("error while parsing msg: %w", err)
 	}

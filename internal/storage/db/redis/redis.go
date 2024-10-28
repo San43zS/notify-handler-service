@@ -11,18 +11,21 @@ import (
 
 type Store interface {
 	Cache() repo.Cache
+	PubSub() *redis.PubSub
 	Close() error
 }
 
 type store struct {
 	cache repo.Cache
 	db    *redis.Client
+	conn  *redis.PubSub
 }
 
-func configure(db *redis.Client) Store {
+func configure(db *redis.Client, c *redis.PubSub) Store {
 	return store{
 		cache: cashRep.New(db),
 		db:    db,
+		conn:  c,
 	}
 }
 
@@ -38,17 +41,21 @@ func New(config config.Config) (Store, error) {
 		return nil, err
 	}
 
-	err = Configuration(context.Background(), client)
+	conn, err := Configuration(context.Background(), client)
 	if err != nil {
 		log.Fatal("Error while subscribing to redis channel: ", err)
 		return nil, err
 	}
 
-	return configure(client), nil
+	return configure(client, conn), nil
 }
 
 func (s store) Close() error {
 	return s.db.Close()
+}
+
+func (s store) PubSub() *redis.PubSub {
+	return s.conn
 }
 
 func (s store) Cache() repo.Cache {

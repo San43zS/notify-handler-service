@@ -13,6 +13,11 @@ const (
 	ContextTimeOut = 5 * time.Second
 )
 
+const (
+	QueueName2    = "yellow2"
+	ExchangeName2 = "test2"
+)
+
 type Config struct {
 	URL    string
 	Driver string
