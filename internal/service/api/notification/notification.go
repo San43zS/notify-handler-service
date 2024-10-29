@@ -8,4 +8,5 @@ import (
 type Notification interface {
 	Add(ctx context.Context, notification notification2.Notification) error
 	Delete(ctx context.Context, id int) error
+	Send() (notification2.Notification, error)
 }

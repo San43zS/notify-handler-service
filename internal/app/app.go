@@ -6,6 +6,7 @@ import (
 	"Notify-handler-service/internal/storage/config"
 	"Notify-handler-service/internal/storage/db/redis"
 	"context"
+	"fmt"
 	"log"
 )
 
@@ -32,13 +33,12 @@ func New() (*App, error) {
 func (a *App) Start(ctx context.Context) error {
 	srv, err := server.New(a.server)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create server: %w", err)
 	}
 
-	//TODO:
-	//if err := srv.Start(ctx); err != nil {
-	//	return err
-	//}
+	if err := srv.Start(context.Background()); err != nil {
+		return fmt.Errorf("failed to start server: %w", err)
+	}
 	log.Println("Server stopped")
 	return nil
 }

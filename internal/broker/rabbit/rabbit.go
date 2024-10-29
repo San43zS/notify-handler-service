@@ -31,7 +31,12 @@ func New() (Service, error) {
 		return nil, err
 	}
 
-	if err := Configure(ch); err != nil {
+	if err := ConfigureConsumer(ch); err != nil {
+		ch.Close()
+		conn.Close()
+	}
+
+	if err := ConfigureProducer(ch); err != nil {
 		ch.Close()
 		conn.Close()
 	}

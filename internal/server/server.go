@@ -3,19 +3,31 @@ package server
 import (
 	"Notify-handler-service/internal/broker"
 	"Notify-handler-service/internal/service"
+	"context"
+	"fmt"
 )
 
-type server struct {
+type Server struct {
 	broker broker.Broker
 }
 
-func New(srv service.Service) (broker.Broker, error) {
+func New(srv service.Service) (*Server, error) {
 	brk, err := broker.New()
 	if err != nil {
-		return broker.Broker{}, err
+		return &Server{
+			broker: brk,
+		}, err
 	}
 
-	return brk, nil
+	return &Server{
+		broker: brk,
+	}, nil
 }
 
-//TODO func Run() error
+func (s *Server) Start(ctx context.Context) error {
+	err := s.broker.Start(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to start broker: %w", err)
+	}
+	return nil
+}

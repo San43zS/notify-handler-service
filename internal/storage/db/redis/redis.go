@@ -1,6 +1,7 @@
 package redis
 
 import (
+	notification2 "Notify-handler-service/internal/handler/notification"
 	"Notify-handler-service/internal/storage/config"
 	cashRep "Notify-handler-service/internal/storage/db/redis/cache"
 	"Notify-handler-service/internal/storage/repo"
@@ -13,6 +14,7 @@ type Store interface {
 	Cache() repo.Cache
 	PubSub() *redis.PubSub
 	Close() error
+	Notification() notification2.Notification
 }
 
 type store struct {
@@ -60,4 +62,8 @@ func (s store) PubSub() *redis.PubSub {
 
 func (s store) Cache() repo.Cache {
 	return s.cache
+}
+
+func (s store) Notification() notification2.Notification {
+	return s.Notification()
 }

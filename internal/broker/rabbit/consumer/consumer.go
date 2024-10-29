@@ -25,13 +25,13 @@ func (c consumer) Consume(ctx context.Context) ([]byte, error) {
 	defer cancel()
 
 	msgs, err := c.dial.Consume(
-		config.QueueName, // queue
-		"",               // consumer
-		true,             // auto-ack
-		false,            // exclusive
-		false,            // no-local
-		false,            // no-wait
-		nil,              // args
+		config.ConQueueName, // queue
+		"",                  // consumer
+		true,                // auto-ack
+		false,               // exclusive
+		false,               // no-local
+		false,               // no-wait
+		nil,                 // args
 	)
 	if err != nil {
 

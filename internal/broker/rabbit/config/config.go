@@ -7,15 +7,15 @@ import (
 )
 
 const (
-	QueueName      = "yellow"
-	ExchangeName   = "test"
-	ExchangeType   = "direct"
-	ContextTimeOut = 5 * time.Second
+	ConQueueName    = "yellow"
+	ConExchangeName = "test"
+	ExchangeType    = "direct"
+	ContextTimeOut  = 5 * time.Second
 )
 
 const (
-	QueueName2    = "yellow2"
-	ExchangeName2 = "test2"
+	ProQueueName    = "yellow2"
+	ProExchangeName = "test2"
 )
 
 type Config struct {

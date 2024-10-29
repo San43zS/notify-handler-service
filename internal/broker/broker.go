@@ -2,6 +2,7 @@ package broker
 
 import (
 	"Notify-handler-service/internal/broker/rabbit"
+	"context"
 	"fmt"
 )
 
@@ -21,4 +22,10 @@ func New() (Broker, error) {
 	}
 
 	return broker, nil
+}
+
+// TODO: add config for array of consumers!!!!!!!!
+func (b Broker) Start(ctx context.Context) error {
+
+	return nil
 }

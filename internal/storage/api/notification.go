@@ -11,7 +11,7 @@ import (
 type Notification interface {
 	Add(ctx context.Context, notification notification3.Notification) error
 	Delete(ctx context.Context, id int) error
-	Receive() (notification3.Notification, error)
+	Send() (notification3.Notification, error)
 }
 
 type notification struct {
@@ -34,7 +34,7 @@ func (n notification) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (n notification) Receive() (notification3.Notification, error) {
+func (n notification) Send() (notification3.Notification, error) {
 	conn := n.PubSub()
 	mCh := make(chan notification3.Notification, 1)
 	errCh := make(chan error, 1)

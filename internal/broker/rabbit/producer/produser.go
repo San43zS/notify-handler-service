@@ -26,10 +26,10 @@ func (p producer) Produce(ctx context.Context, arr []byte) error {
 
 	body := arr
 	err := p.dial.PublishWithContext(ctx,
-		config.ExchangeName, // exchange
-		config.QueueName,    // routing key
-		false,               // mandatory
-		false,               // immediate
+		config.ProExchangeName, // exchange
+		config.ProQueueName,    // routing key
+		false,                  // mandatory
+		false,                  // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        body,
