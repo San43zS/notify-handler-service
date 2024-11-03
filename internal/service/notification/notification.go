@@ -23,3 +23,7 @@ func (s *service) Add(ctx context.Context, notification notification3.Notificati
 func (s *service) Delete(ctx context.Context, id int) error {
 	return s.storage.Delete(ctx, id)
 }
+
+func (s *service) Send() (notification3.Notification, error) {
+	return s.storage.Send()
+}

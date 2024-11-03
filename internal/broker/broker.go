@@ -2,11 +2,12 @@ package broker
 
 import (
 	"Notify-handler-service/internal/broker/rabbit"
-	"context"
+	"Notify-handler-service/pkg/msghandler"
 	"fmt"
 )
 
 type Broker struct {
+	handler  msghandler.MsgResolver
 	RabbitMQ rabbit.Service
 }
 
@@ -22,10 +23,4 @@ func New() (Broker, error) {
 	}
 
 	return broker, nil
-}
-
-// TODO: add config for array of consumers!!!!!!!!
-func (b Broker) Start(ctx context.Context) error {
-
-	return nil
 }

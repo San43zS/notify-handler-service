@@ -36,7 +36,7 @@ func (a *App) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to create server: %w", err)
 	}
 
-	if err := srv.Start(context.Background()); err != nil {
+	if err := srv.Serve(ctx); err != nil {
 		return fmt.Errorf("failed to start server: %w", err)
 	}
 	log.Println("Server stopped")
