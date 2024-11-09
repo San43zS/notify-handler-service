@@ -1,27 +1,56 @@
 package msghandler
 
-import "context"
+import (
+	"context"
+	"errors"
+)
 
-type HandlerFunc func(ctx context.Context, msg []byte) error
-
-func (h HandlerFunc) ServeMSG(ctx context.Context, msg []byte) error {
-	return nil
-}
+type EventParser func(msg []byte) (string, error)
+type HandlerFunc1 func(ctx context.Context, msg []byte) error
+type HandlerFunc2 func(ctx context.Context) ([]byte, error)
 
 type MsgResolver interface {
 	ServeMSG(ctx context.Context, msg []byte) error
 }
 
-type handler struct {
-	handler HandlerFunc
+type MsgHandler interface {
+	MsgResolver
+	Add(event string, fn interface{})
 }
 
-func New(fn HandlerFunc) MsgResolver {
+type handler struct {
+	eventParser EventParser
+	handlers    map[string]interface{}
+}
+
+func New(parser EventParser) MsgHandler {
 	return &handler{
-		handler: fn,
+		eventParser: parser,
+		handlers:    make(map[string]interface{}),
 	}
 }
 
 func (h *handler) ServeMSG(ctx context.Context, msg []byte) error {
-	return h.handler(ctx, msg)
+	event, err := h.eventParser(msg)
+	if err != nil {
+		return err
+	}
+
+	fn, ok := h.handlers[event]
+	if !ok {
+		return err
+	}
+	switch fn := fn.(type) {
+	case HandlerFunc1:
+		return fn(ctx, msg)
+	case HandlerFunc2:
+		_, err := fn(ctx)
+		return err
+	default:
+		return errors.New("unknown handler type")
+	}
+}
+
+func (h *handler) Add(event string, fn interface{}) {
+	h.handlers[event] = fn
 }

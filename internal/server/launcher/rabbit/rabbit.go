@@ -45,7 +45,7 @@ func (s server) serve(ctx context.Context) error {
 	c := s.broker.Consumer()
 	for {
 		if err := ctx.Err(); err != nil {
-			fmt.Errorf("kafka listener stopped error: %v", err)
+			fmt.Errorf("rabbit listener stopped error: %v", err)
 			return nil
 		}
 

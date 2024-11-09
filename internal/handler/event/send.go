@@ -6,13 +6,20 @@ import (
 	"fmt"
 )
 
-func (h *handler) Send() error {
+func (h Handler) SendNotify() error {
 	msg, err := h.srv.Notification().Send()
 	if err != nil {
 		return fmt.Errorf("error while receiving message from channel: %w", err)
 	}
+	result := msg2.Message{
+		UserId:    msg.UserId,
+		CreatedAt: msg.CreatedAt,
+		Data: msg2.Data{
+			Data: []byte(msg.Data),
+		},
+	}
 
-	arr, err := msg2.New().Unparse(msg)
+	arr, err := msg2.New().Unparse(result)
 
 	err = h.respondConsumer.p.Produce(context.Background(), arr)
 	if err != nil {

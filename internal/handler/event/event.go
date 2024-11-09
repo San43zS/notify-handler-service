@@ -4,14 +4,16 @@ import (
 	"Notify-handler-service/internal/broker/rabbit"
 	"Notify-handler-service/internal/broker/rabbit/consumer"
 	"Notify-handler-service/internal/broker/rabbit/producer"
+	msg2 "Notify-handler-service/internal/handler/model/msg"
+	"Notify-handler-service/internal/handler/model/msg/event"
 	"Notify-handler-service/internal/service"
 	"Notify-handler-service/pkg/msghandler"
-	"context"
+	"fmt"
 )
 
-type handler struct {
+type Handler struct {
 	srv    service.Service
-	router msghandler.MsgResolver
+	router msghandler.MsgHandler
 
 	respondConsumer respCons
 }
@@ -21,15 +23,26 @@ type respCons struct {
 	c consumer.Consumer
 }
 
-func New(srv service.Service, broker rabbit.Service) msghandler.MsgResolver {
-	eventParseFn := func(ctx context.Context, msg []byte) error {
-		//TODO: parse event
-		return nil
+func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
+	eventParseFn := func(msg []byte) (string, error) {
+		m, err := msg2.New().Parse(msg)
+		if err != nil {
+			return "", fmt.Errorf("error while parsing msg: %w", err)
+		}
+		return m.Type, nil
 	}
 
-	handler := &handler{
+	handler := Handler{
 		srv:    srv,
 		router: msghandler.New(eventParseFn),
 	}
+
+	handler.initHandler()
+
 	return handler.router
+}
+
+func (h Handler) initHandler() {
+	h.router.Add(event.SendNotify, h.SendNotify)
+	h.router.Add(event.AddNotify, h.AddNotify)
 }

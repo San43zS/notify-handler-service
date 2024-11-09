@@ -1,14 +1,13 @@
 package msg
 
 import (
-	notification "Notify-handler-service/internal/model/notification"
 	"encoding/json"
 	"fmt"
 )
 
 type Parser interface {
-	Parse([]byte) (notification.Notification, error)
-	Unparse(notification.Notification) ([]byte, error)
+	Parse([]byte) (MSG, error)
+	Unparse(Message) ([]byte, error)
 }
 
 type parser struct {
@@ -18,19 +17,19 @@ func New() Parser {
 	return &parser{}
 }
 
-func (p parser) Parse(m []byte) (notification.Notification, error) {
+func (p parser) Parse(m []byte) (MSG, error) {
 	var msg MSG
 	if err := json.Unmarshal(m, &msg); err != nil {
-		return notification.Notification{}, fmt.Errorf("error while parsing msg: %w", err)
+		return MSG{}, fmt.Errorf("error while parsing(unmarshal) msg: %w", err)
 	}
-	return notification.Notification{UserId: msg.UserId, Data: msg.Data, TTL: msg.TTL, CreatedAt: msg.CreatedAt}, nil
+
+	return msg, nil
 }
 
-func (p parser) Unparse(notification notification.Notification) ([]byte, error) {
-	var arr []byte
-	arr, err := json.Marshal(notification)
+func (p parser) Unparse(m Message) ([]byte, error) {
+	arr, err := json.Marshal(m)
 	if err != nil {
-		return nil, fmt.Errorf("error while unmarshaling msg: %w", err)
+		return nil, fmt.Errorf("error while parsing(marshal) msg: %w", err)
 	}
 	return arr, nil
 }

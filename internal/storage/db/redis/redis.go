@@ -33,9 +33,7 @@ func configure(db *redis.Client, c *redis.PubSub) Store {
 
 func New(config config.Config) (Store, error) {
 	client := redis.NewClient(&redis.Options{
-		Addr:     config.URL,
-		Password: config.Password,
-		Username: config.Username,
+		Addr: config.URL,
 	})
 
 	_, err := client.Ping(context.Background()).Result()

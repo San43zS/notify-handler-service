@@ -3,8 +3,17 @@ package msg
 import "time"
 
 type MSG struct {
-	UserId    int           `json:"user_id"`
-	Data      string        `json:"data"`
-	TTL       time.Duration `json:"ttl"`
-	CreatedAt time.Time     `json:"created_at"`
+	Type string `json:"type"`
+
+	Content Data
+}
+
+type Data struct {
+	Data []byte `json:"data"`
+}
+
+type Message struct {
+	UserId    int
+	CreatedAt time.Time `json:"created_at"`
+	Data      Data
 }

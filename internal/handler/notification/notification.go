@@ -10,7 +10,3 @@ type Notification interface {
 	Delete(ctx context.Context, id int) error
 	Send() (notification2.Notification, error)
 }
-
-type notification struct {
-	//Notification
-}
