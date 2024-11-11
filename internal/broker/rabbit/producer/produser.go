@@ -21,15 +21,13 @@ func New(dial *amqp.Channel) Producer {
 }
 
 func (p producer) Produce(ctx context.Context, arr []byte) error {
-	ctx, cancel := context.WithTimeout(context.Background(), config.ContextTimeOut)
-	defer cancel()
 
 	body := arr
 	err := p.dial.PublishWithContext(ctx,
-		config.ProExchangeName, // exchange
-		config.ProQueueName,    // routing key
-		false,                  // mandatory
-		false,                  // immediate
+		config.ProducerExchangeName, // exchange
+		config.ProducerQueueName,    // routing key
+		false,                       // mandatory
+		false,                       // immediate
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        body,

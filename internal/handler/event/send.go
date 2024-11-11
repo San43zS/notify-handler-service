@@ -11,6 +11,7 @@ func (h Handler) SendNotify() error {
 	if err != nil {
 		return fmt.Errorf("error while receiving message from channel: %w", err)
 	}
+
 	result := msg2.Message{
 		UserId:    msg.UserId,
 		CreatedAt: msg.CreatedAt,

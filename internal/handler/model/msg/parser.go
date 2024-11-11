@@ -19,7 +19,8 @@ func New() Parser {
 
 func (p parser) Parse(m []byte) (MSG, error) {
 	var msg MSG
-	if err := json.Unmarshal(m, &msg); err != nil {
+	test := string(m)
+	if err := json.Unmarshal([]byte(test), &msg); err != nil {
 		return MSG{}, fmt.Errorf("error while parsing(unmarshal) msg: %w", err)
 	}
 

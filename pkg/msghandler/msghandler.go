@@ -2,11 +2,12 @@ package msghandler
 
 import (
 	"context"
-	"errors"
 )
 
 type EventParser func(msg []byte) (string, error)
-type HandlerFunc1 func(ctx context.Context, msg []byte) error
+type (
+	HandlerFunc1 func(ctx context.Context, msg []byte) error
+)
 type HandlerFunc2 func(ctx context.Context) ([]byte, error)
 
 type MsgResolver interface {
@@ -15,18 +16,18 @@ type MsgResolver interface {
 
 type MsgHandler interface {
 	MsgResolver
-	Add(event string, fn interface{})
+	Add(event string, fn HandlerFunc1)
 }
 
 type handler struct {
 	eventParser EventParser
-	handlers    map[string]interface{}
+	handlers    map[string]HandlerFunc1
 }
 
 func New(parser EventParser) MsgHandler {
 	return &handler{
 		eventParser: parser,
-		handlers:    make(map[string]interface{}),
+		handlers:    make(map[string]HandlerFunc1),
 	}
 }
 
@@ -40,17 +41,9 @@ func (h *handler) ServeMSG(ctx context.Context, msg []byte) error {
 	if !ok {
 		return err
 	}
-	switch fn := fn.(type) {
-	case HandlerFunc1:
-		return fn(ctx, msg)
-	case HandlerFunc2:
-		_, err := fn(ctx)
-		return err
-	default:
-		return errors.New("unknown handler type")
-	}
+	return fn(ctx, msg)
 }
 
-func (h *handler) Add(event string, fn interface{}) {
+func (h *handler) Add(event string, fn HandlerFunc1) {
 	h.handlers[event] = fn
 }

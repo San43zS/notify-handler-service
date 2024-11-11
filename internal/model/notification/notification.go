@@ -8,3 +8,9 @@ type Notification struct {
 	TTL       time.Duration
 	CreatedAt time.Time
 }
+
+type Notify struct {
+	Number    int       `json:"number"`
+	Data      string    `json:"data"`
+	CreatedAt time.Time `json:"created_at"`
+}

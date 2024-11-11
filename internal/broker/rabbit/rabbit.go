@@ -34,11 +34,13 @@ func New() (Service, error) {
 	if err := ConfigureConsumer(ch); err != nil {
 		ch.Close()
 		conn.Close()
+		return nil, err
 	}
 
 	if err := ConfigureProducer(ch); err != nil {
 		ch.Close()
 		conn.Close()
+		return nil, err
 	}
 
 	srv := &service{dial: ch}

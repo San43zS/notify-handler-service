@@ -6,7 +6,6 @@ import (
 )
 
 func (h Handler) AddNotify(ctx context.Context, msg []byte) error {
-
 	recMSG, err := InitNotify(msg)
 	if err != nil {
 		return fmt.Errorf("error while initializing notification: %w", err)

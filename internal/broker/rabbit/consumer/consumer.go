@@ -21,17 +21,15 @@ func New(dial *amqp.Channel) Consumer {
 }
 
 func (c consumer) Consume(ctx context.Context) ([]byte, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), config.ContextTimeOut)
-	defer cancel()
 
 	msgs, err := c.dial.Consume(
-		config.ConQueueName, // queue
-		"",                  // consumer
-		true,                // auto-ack
-		false,               // exclusive
-		false,               // no-local
-		false,               // no-wait
-		nil,                 // args
+		config.ConsumerQueueName, // queue
+		"",                       // consumer
+		false,                    // auto-ack
+		false,                    // exclusive
+		false,                    // no-local
+		true,                     // no-wait
+		nil,                      // args
 	)
 	if err != nil {
 

@@ -6,15 +6,14 @@ import (
 )
 
 func ConfigureConsumer(ch *amqp.Channel) error {
-
 	err := ch.ExchangeDeclare(
-		config.ConExchangeName, // name
-		config.ExchangeType,    // type
-		true,                   // durable
-		false,                  // auto-deleted
-		false,                  // internal
-		false,                  // no-wait
-		nil,                    // arguments
+		config.ConsumerExchangeName, // name
+		amqp.ExchangeDirect,         // type
+		true,                        // durable
+		false,                       // auto-deleted
+		false,                       // internal
+		false,                       // no-wait
+		nil,                         // arguments
 	)
 
 	if err != nil {
@@ -22,12 +21,12 @@ func ConfigureConsumer(ch *amqp.Channel) error {
 	}
 
 	q, err := ch.QueueDeclare(
-		config.ConQueueName, // name
-		false,               // durable
-		false,               // delete when unused
-		true,                // exclusive
-		false,               // no-wait
-		nil,                 // arguments
+		config.ConsumerQueueName, // name
+		false,                    // durable
+		false,                    // delete when unused
+		false,                    // exclusive
+		false,                    // no-wait
+		nil,                      // arguments
 	)
 
 	if err != nil {
@@ -35,9 +34,9 @@ func ConfigureConsumer(ch *amqp.Channel) error {
 	}
 
 	err = ch.QueueBind(
-		q.Name,                 // name
-		config.ConQueueName,    // key
-		config.ConExchangeName, // exchange
+		q.Name,                      // name
+		config.ConsumerRoutingKey,   // key
+		config.ConsumerExchangeName, // exchange
 		false,
 		nil,
 	)
@@ -50,13 +49,13 @@ func ConfigureConsumer(ch *amqp.Channel) error {
 func ConfigureProducer(ch *amqp.Channel) error {
 
 	err := ch.ExchangeDeclare(
-		config.ProExchangeName, // name
-		config.ExchangeType,    // type
-		true,                   // durable
-		false,                  // auto-deleted
-		false,                  // internal
-		false,                  // no-wait
-		nil,                    // arguments
+		config.ProducerExchangeName, // name
+		amqp.ExchangeDirect,         // type
+		true,                        // durable
+		false,                       // auto-deleted
+		false,                       // internal
+		false,                       // no-wait
+		nil,                         // arguments
 	)
 
 	if err != nil {
@@ -64,12 +63,12 @@ func ConfigureProducer(ch *amqp.Channel) error {
 	}
 
 	q, err := ch.QueueDeclare(
-		config.ProQueueName, // name
-		false,               // durable
-		false,               // delete when unused
-		true,                // exclusive
-		false,               // no-wait
-		nil,                 // arguments
+		config.ProducerQueueName, // name
+		false,                    // durable
+		false,                    // delete when unused
+		false,                    // exclusive
+		false,                    // no-wait
+		nil,                      // arguments
 	)
 
 	if err != nil {
@@ -77,14 +76,15 @@ func ConfigureProducer(ch *amqp.Channel) error {
 	}
 
 	err = ch.QueueBind(
-		q.Name,                 // name
-		config.ProQueueName,    // key
-		config.ProExchangeName, // exchange
+		q.Name,                      // name
+		config.ProducerRoutingKey,   // key
+		config.ProducerExchangeName, // exchange
 		false,
 		nil,
 	)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

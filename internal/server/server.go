@@ -4,10 +4,12 @@ import (
 	"Notify-handler-service/internal/broker"
 	handler "Notify-handler-service/internal/handler"
 	"Notify-handler-service/internal/server/launcher"
+	redisPubSub "Notify-handler-service/internal/server/launcher/pubSub"
 	"Notify-handler-service/internal/server/launcher/rabbit"
 	"Notify-handler-service/internal/service"
 	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/errgroup"
 	"os"
 	"os/signal"
@@ -19,7 +21,7 @@ type server struct {
 	servers []launcher.Server
 }
 
-func New(srv service.Service) (launcher.Server, error) {
+func New(srv service.Service, pubSub *redis.PubSub) (launcher.Server, error) {
 	brk, err := broker.New()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create broker: %w", err)
@@ -30,6 +32,7 @@ func New(srv service.Service) (launcher.Server, error) {
 	s := &server{
 		servers: []launcher.Server{
 			rabbit.New(brk.RabbitMQ, h.Event),
+			redisPubSub.New(pubSub, h.Event),
 		},
 	}
 
@@ -42,7 +45,6 @@ func (s server) Serve(ctx context.Context) error {
 
 	gr, grCtx := errgroup.WithContext(ctx)
 
-	// start server
 	gr.Go(func() error {
 		return s.serve(grCtx)
 	})

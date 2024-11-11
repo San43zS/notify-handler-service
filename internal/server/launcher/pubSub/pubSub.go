@@ -1,24 +1,25 @@
-package rabbit
+package pubSub
 
 import (
-	"Notify-handler-service/internal/broker/rabbit"
 	"Notify-handler-service/internal/server/launcher"
 	"Notify-handler-service/pkg/msghandler"
 	"context"
 	"fmt"
+	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/errgroup"
+	"log"
 	"sync"
 )
 
 type server struct {
 	handler msghandler.MsgResolver
-	broker  rabbit.Service
+	pubSub  *redis.PubSub
 }
 
-func New(broker rabbit.Service, handler msghandler.MsgResolver) launcher.Server {
+func New(pubSub *redis.PubSub, handler msghandler.MsgResolver) launcher.Server {
 	server := &server{
 		handler: handler,
-		broker:  broker,
+		pubSub:  pubSub,
 	}
 
 	return server
@@ -41,25 +42,29 @@ func (s server) Serve(ctx context.Context) error {
 	return gr.Wait()
 }
 
+// ???????????????????????????????????????????/
 func (s server) serve(ctx context.Context) error {
-	c := s.broker.Consumer()
+	conn := s.pubSub
 	for {
 		if err := ctx.Err(); err != nil {
-			return fmt.Errorf("rabbit listener stopped error: %v", err)
+			err := fmt.Errorf("PubSub listener stopped error: %v", err)
+			return err
 		}
 
-		m, err := c.Consume(ctx)
+		m, err := conn.Receive(context.Background())
 		if err != nil {
-			fmt.Errorf("failed to consume message error: %v", err)
+			log.Println("failed to receive message from pubSub:", err)
 			continue
 		}
 
-		go func() {
-			err := s.handler.ServeMSG(ctx, m)
-			if err != nil {
-				fmt.Errorf("failed to handle message: %v", err)
-				return
-			}
-		}()
+		if msg, ok := m.(*redis.Message); ok {
+			go func() {
+				err := s.handler.ServeMSG(ctx, []byte(msg.Payload))
+				if err != nil {
+					fmt.Errorf("failed to handle message: %v", err)
+					return
+				}
+			}()
+		}
 	}
 }

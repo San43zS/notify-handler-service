@@ -11,7 +11,8 @@ import (
 )
 
 type App struct {
-	server service.Service
+	server  service.Service
+	storage redis.Store
 }
 
 func New() (*App, error) {
@@ -24,14 +25,15 @@ func New() (*App, error) {
 	srv := service.New(storage)
 
 	app := &App{
-		server: srv,
+		server:  srv,
+		storage: storage,
 	}
 
 	return app, nil
 }
 
 func (a *App) Start(ctx context.Context) error {
-	srv, err := server.New(a.server)
+	srv, err := server.New(a.server, a.storage.PubSub())
 	if err != nil {
 		return fmt.Errorf("failed to create server: %w", err)
 	}
@@ -40,5 +42,6 @@ func (a *App) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to start server: %w", err)
 	}
 	log.Println("Server stopped")
+
 	return nil
 }
