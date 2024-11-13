@@ -42,7 +42,6 @@ func (s server) Serve(ctx context.Context) error {
 	return gr.Wait()
 }
 
-// ???????????????????????????????????????????/
 func (s server) serve(ctx context.Context) error {
 	conn := s.pubSub
 	for {
@@ -59,7 +58,12 @@ func (s server) serve(ctx context.Context) error {
 
 		if msg, ok := m.(*redis.Message); ok {
 			go func() {
-				err := s.handler.ServeMSG(ctx, []byte(msg.Payload))
+				message, err := Configuration([]byte(msg.Payload))
+				if err != nil {
+					fmt.Errorf("failed to parse message: %v", err)
+					return
+				}
+				err = s.handler.ServeMSG(ctx, message)
 				if err != nil {
 					fmt.Errorf("failed to handle message: %v", err)
 					return

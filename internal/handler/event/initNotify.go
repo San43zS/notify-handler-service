@@ -1,8 +1,8 @@
 package event
 
 import (
-	msg2 "Notify-handler-service/internal/handler/model/msg"
 	"Notify-handler-service/internal/handler/model/msg/event"
+	msg2 "Notify-handler-service/internal/handler/model/msg/parser/rabbitParser"
 	"Notify-handler-service/internal/model/notification"
 	"fmt"
 	"time"

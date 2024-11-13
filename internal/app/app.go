@@ -1,6 +1,7 @@
 package app
 
 import (
+	"Notify-handler-service/internal/broker"
 	"Notify-handler-service/internal/server"
 	"Notify-handler-service/internal/service"
 	"Notify-handler-service/internal/storage/config"
@@ -13,6 +14,7 @@ import (
 type App struct {
 	server  service.Service
 	storage redis.Store
+	broker  broker.Broker
 }
 
 func New() (*App, error) {
@@ -22,18 +24,24 @@ func New() (*App, error) {
 		return &App{}, err
 	}
 
-	srv := service.New(storage)
+	broker, err := broker.New()
+	if err != nil {
+		return &App{}, err
+	}
+
+	srv := service.New(storage, broker)
 
 	app := &App{
 		server:  srv,
 		storage: storage,
+		broker:  broker,
 	}
 
 	return app, nil
 }
 
 func (a *App) Start(ctx context.Context) error {
-	srv, err := server.New(a.server, a.storage.PubSub())
+	srv, err := server.New(a.server, a.storage.PubSub(), a.broker)
 	if err != nil {
 		return fmt.Errorf("failed to create server: %w", err)
 	}

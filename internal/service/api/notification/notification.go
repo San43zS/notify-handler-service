@@ -5,8 +5,14 @@ import (
 	"context"
 )
 
-type Notification interface {
+type NotifyRedis interface {
 	Add(ctx context.Context, notification notification2.Notification) error
 	Delete(ctx context.Context, id int) error
-	Send() (notification2.Notification, error)
+}
+
+type NotifyRabbit interface {
+	GetOld(ctx context.Context) ([]byte, error)
+	GetCurrent(ctx context.Context) ([]byte, error)
+	AddExpired(ctx context.Context, msg []byte) error
+	Add(ctx context.Context) ([]byte, error)
 }

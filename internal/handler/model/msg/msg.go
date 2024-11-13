@@ -17,3 +17,8 @@ type Message struct {
 	CreatedAt time.Time `json:"created_at"`
 	Data      Data
 }
+
+type Uint struct {
+	Type string `json:"type"`
+	Data []byte `json:"data"`
+}

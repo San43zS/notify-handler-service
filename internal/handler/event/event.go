@@ -2,10 +2,8 @@ package event
 
 import (
 	"Notify-handler-service/internal/broker/rabbit"
-	"Notify-handler-service/internal/broker/rabbit/consumer"
-	"Notify-handler-service/internal/broker/rabbit/producer"
-	msg2 "Notify-handler-service/internal/handler/model/msg"
 	"Notify-handler-service/internal/handler/model/msg/event"
+	msg2 "Notify-handler-service/internal/handler/model/msg/parser/rabbitParser"
 	"Notify-handler-service/internal/service"
 	"Notify-handler-service/pkg/msghandler"
 	"fmt"
@@ -14,13 +12,6 @@ import (
 type Handler struct {
 	srv    service.Service
 	router msghandler.MsgHandler
-
-	respondConsumer respCons
-}
-
-type respCons struct {
-	p producer.Producer
-	c consumer.Consumer
 }
 
 func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
@@ -45,4 +36,5 @@ func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
 func (h Handler) initHandler() {
 	//h.router.Add(event.SendNotify, h.SendNotify)
 	h.router.Add(event.AddNotify, h.AddNotify)
+	h.router.Add(event.AddExpired, h.AddExpired)
 }

@@ -5,6 +5,8 @@ import "time"
 const (
 	AddNotify  string = "add-notify"
 	SendNotify string = "send-notify"
+
+	AddExpired string = "add-expired"
 )
 
 const (

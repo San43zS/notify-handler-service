@@ -17,7 +17,7 @@ const (
 const (
 	HandlerServiceConsumer = "HandlerServiceConsumer"
 	ProducerQueueName      = "greenQueue"
-	ProducerExchangeName   = "test2"
+	ProducerExchangeName   = "test"
 	ProducerRoutingKey     = "green"
 )
 

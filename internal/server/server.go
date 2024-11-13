@@ -21,17 +21,12 @@ type server struct {
 	servers []launcher.Server
 }
 
-func New(srv service.Service, pubSub *redis.PubSub) (launcher.Server, error) {
-	brk, err := broker.New()
-	if err != nil {
-		return nil, fmt.Errorf("failed to create broker: %w", err)
-	}
-
-	h := handler.New(srv, brk)
+func New(srv service.Service, pubSub *redis.PubSub, broker broker.Broker) (launcher.Server, error) {
+	h := handler.New(srv, broker)
 
 	s := &server{
 		servers: []launcher.Server{
-			rabbit.New(brk.RabbitMQ, h.Event),
+			rabbit.New(broker.RabbitMQ, h.Event),
 			redisPubSub.New(pubSub, h.Event),
 		},
 	}

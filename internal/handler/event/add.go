@@ -11,7 +11,7 @@ func (h Handler) AddNotify(ctx context.Context, msg []byte) error {
 		return fmt.Errorf("error while initializing notification: %w", err)
 	}
 
-	err = h.srv.Notification().Add(ctx, recMSG)
+	err = h.srv.NotificationRedis().Add(ctx, recMSG)
 	if err != nil {
 		return fmt.Errorf("error while adding notification to redis: %w", err)
 	}
