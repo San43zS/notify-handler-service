@@ -1,4 +1,4 @@
-package config
+package redis
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	ChannelName = "Notify"
+	ChannelName = "__keyevent@0__:expired"
 )
 
 type Config struct {
@@ -16,12 +16,12 @@ type Config struct {
 }
 
 func NewConfig() Config {
-	host := viper.GetString("db.redis.host")
-	port := viper.GetString("db.redis.port")
+	host := viper.GetString("DB.REDIS.HOST")
+	port := viper.GetString("DB.REDIS.PORT")
 
 	return Config{
 		URL:      fmt.Sprintf("%s:%s", host, port),
-		Password: viper.GetString("db.redis.password"),
-		Username: viper.GetString("db.redis.username"),
+		Password: viper.GetString("DB.REDIS.PASSWORD"),
+		Username: viper.GetString("DB.REDIS.USERNAME"),
 	}
 }

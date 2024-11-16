@@ -6,6 +6,6 @@ import (
 )
 
 func Configuration(ctx context.Context, conn *redis.Client) (*redis.PubSub, error) {
-	pubSub := conn.Subscribe(ctx, "__keyevent@0__:expired")
+	pubSub := conn.Subscribe(ctx, ChannelName)
 	return pubSub, nil
 }

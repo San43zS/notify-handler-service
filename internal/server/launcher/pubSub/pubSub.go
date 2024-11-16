@@ -58,7 +58,10 @@ func (s server) serve(ctx context.Context) error {
 
 		if msg, ok := m.(*redis.Message); ok {
 			go func() {
+				test := msg.String()
+				fmt.Println(test)
 				message, err := Configuration([]byte(msg.Payload))
+
 				if err != nil {
 					fmt.Errorf("failed to parse message: %v", err)
 					return

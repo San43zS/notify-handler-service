@@ -1,22 +1,21 @@
 package redis
 
 import (
-	"Notify-handler-service/internal/storage/config"
+	"Notify-handler-service/internal/storage/api/cache"
 	cashRep "Notify-handler-service/internal/storage/db/redis/cache"
-	"Notify-handler-service/internal/storage/repo"
 	"context"
 	"github.com/redis/go-redis/v9"
 	"log"
 )
 
 type Store interface {
-	Cache() repo.Cache
+	Cache() cache.Cache
 	PubSub() *redis.PubSub
 	Close() error
 }
 
 type store struct {
-	cache repo.Cache
+	cache cache.Cache
 	db    *redis.Client
 	conn  *redis.PubSub
 }
@@ -29,7 +28,7 @@ func configure(db *redis.Client, c *redis.PubSub) Store {
 	}
 }
 
-func New(config config.Config) (Store, error) {
+func New(config Config) (Store, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr: config.URL,
 	})
@@ -56,6 +55,6 @@ func (s store) PubSub() *redis.PubSub {
 	return s.conn
 }
 
-func (s store) Cache() repo.Cache {
+func (s store) Cache() cache.Cache {
 	return s.cache
 }

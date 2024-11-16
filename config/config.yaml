@@ -7,9 +7,19 @@ AMQP:
   DRIVER: "amqp"
   URLTEMPLATE: "://%s:%s@%s:%s/"
 
-db:
-  redis:
-    host: "localhost"
-    port: "6379"
-    password: "pass"
-    username: "redis"
+DB:
+  REDIS:
+    HOST: "localhost"
+    PORT: "6379"
+    PASSWORD: "pass"
+    USERNAME: "redis"
+
+  PSQL:
+    HOST: "localhost"
+    PORT: "33061"
+    USER: "postgres"
+    PASSWORD: "pass"
+    DBNAME: "userdb"
+
+    DRIVER: "postgres"
+    URLTEMPLATE: "host=%s port=%s dbname=%s notification=%s password=%s sslmode=disable"

@@ -4,7 +4,7 @@ import (
 	"Notify-handler-service/internal/broker"
 	"Notify-handler-service/internal/server"
 	"Notify-handler-service/internal/service"
-	"Notify-handler-service/internal/storage/config"
+	storage "Notify-handler-service/internal/storage"
 	"Notify-handler-service/internal/storage/db/redis"
 	"context"
 	"fmt"
@@ -18,22 +18,22 @@ type App struct {
 }
 
 func New() (*App, error) {
-	storage, err := redis.New(config.NewConfig())
+	strg, err := storage.New()
 	if err != nil {
 		log.Fatal("Error while connecting to redis: ", err)
 		return &App{}, err
 	}
-
+	//////////////????????????????????????????>
 	broker, err := broker.New()
 	if err != nil {
 		return &App{}, err
 	}
 
-	srv := service.New(storage, broker)
+	srv := service.New(strg, broker)
 
 	app := &App{
 		server:  srv,
-		storage: storage,
+		storage: strg,
 		broker:  broker,
 	}
 
