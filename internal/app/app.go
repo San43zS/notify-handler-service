@@ -8,8 +8,10 @@ import (
 	"Notify-handler-service/internal/storage/db/redis"
 	"context"
 	"fmt"
-	"log"
+	"github.com/op/go-logging"
 )
+
+var log = logging.MustGetLogger("app")
 
 type App struct {
 	server  service.Service
@@ -20,12 +22,13 @@ type App struct {
 func New() (*App, error) {
 	strg, err := storage.New()
 	if err != nil {
-		log.Fatal("Error while connecting to redis: ", err)
+		log.Criticalf("Error while connecting to storage: %s", err)
 		return &App{}, err
 	}
-	//////////////????????????????????????????>
+
 	broker, err := broker.New()
 	if err != nil {
+		log.Criticalf("Error while connecting to broker: %s", err)
 		return &App{}, err
 	}
 
@@ -43,13 +46,15 @@ func New() (*App, error) {
 func (a *App) Start(ctx context.Context) error {
 	srv, err := server.New(a.server, a.storage.PubSub(), a.broker)
 	if err != nil {
+		log.Criticalf("failed to create server: %s", err)
 		return fmt.Errorf("failed to create server: %w", err)
 	}
 
 	if err := srv.Serve(ctx); err != nil {
 		return fmt.Errorf("failed to start server: %w", err)
 	}
-	log.Println("Server stopped")
+
+	log.Infof("server stopped")
 
 	return nil
 }
