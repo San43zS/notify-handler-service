@@ -6,7 +6,7 @@ const (
 	AddNotify  string = "add-notify"
 	SendNotify string = "send-notify"
 
-	AddExpired string = "add-expired"
+	ChangeExpired string = "change-expired"
 )
 
 const (

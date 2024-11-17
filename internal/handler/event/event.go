@@ -34,7 +34,6 @@ func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
 }
 
 func (h Handler) initHandler() {
-	//h.router.Add(event.SendNotify, h.SendNotify)
-	h.router.Add(event.AddNotify, h.AddNotify)
-	h.router.Add(event.AddExpired, h.AddExpired)
+	h.router.Add(event.AddNotify, h.Add)
+	h.router.Add(event.ChangeExpired, h.ChangeExpired)
 }

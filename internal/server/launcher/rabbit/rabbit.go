@@ -6,9 +6,12 @@ import (
 	"Notify-handler-service/pkg/msghandler"
 	"context"
 	"fmt"
+	"github.com/op/go-logging"
 	"golang.org/x/sync/errgroup"
 	"sync"
 )
+
+var log = logging.MustGetLogger("rabbit")
 
 type server struct {
 	handler msghandler.MsgResolver
@@ -45,19 +48,20 @@ func (s server) serve(ctx context.Context) error {
 	c := s.broker.Consumer()
 	for {
 		if err := ctx.Err(); err != nil {
+			log.Criticalf("Rabbit listener stopped error: %v", err)
 			return fmt.Errorf("rabbit listener stopped error: %v", err)
 		}
 
 		m, err := c.Consume(ctx)
 		if err != nil {
-			fmt.Errorf("failed to consume message error: %v", err)
+			log.Infof("failed to consume message error: %v", err)
 			continue
 		}
 
 		go func() {
 			err := s.handler.ServeMSG(ctx, m)
 			if err != nil {
-				fmt.Errorf("failed to handle message: %v", err)
+				log.Criticalf("failed to handle message: %v", err)
 				return
 			}
 		}()

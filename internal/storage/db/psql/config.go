@@ -5,11 +5,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-const (
-	CurrentStatus = "not_viewed"
-	OldStatus     = "viewed"
-)
-
 type Config struct {
 	URL    string
 	Driver string

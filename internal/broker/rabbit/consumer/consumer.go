@@ -21,7 +21,6 @@ func New(dial *amqp.Channel) Consumer {
 }
 
 func (c consumer) Consume(ctx context.Context) ([]byte, error) {
-
 	msgs, err := c.dial.Consume(
 		config.ConsumerQueueName, // queue
 		"",                       // consumer

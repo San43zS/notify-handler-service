@@ -34,3 +34,19 @@ func (r repository) Add(ctx context.Context, notification notify.Notification) e
 
 	return nil
 }
+
+func (r repository) ChangeStatus(ctx context.Context, id string, status string) error {
+	query := `UPDATE notify SET status = $1 WHERE id = $2`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("failed to prepare query: %w", err)
+	}
+
+	_, err = stmt.ExecContext(ctx, status, id)
+	if err != nil {
+		return fmt.Errorf("failed to exec query: %w", err)
+	}
+
+	return nil
+}

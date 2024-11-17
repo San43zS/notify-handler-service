@@ -20,9 +20,9 @@ func New(storage redis.Store) notification.NotifyRedis {
 }
 
 func (n Notify) Add(ctx context.Context, notification notify.Notification) error {
-	err := n.storage.Cache().Set(ctx, strconv.Itoa(notification.Id), "", notification.TTL)
+	err := n.storage.Cache().Set(ctx, notification.Id, "", notification.TTL)
 	if err != nil {
-		return fmt.Errorf("failed to add notification: %w", err)
+		return fmt.Errorf("failed to add notification to redis: %w", err)
 	}
 
 	return nil

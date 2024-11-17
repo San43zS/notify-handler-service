@@ -3,15 +3,12 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
-	"time"
 )
 
 const (
 	ConsumerQueueName    = "yellowQueue"
 	ConsumerExchangeName = "test"
 	ConsumerRoutingKey   = "yellow"
-	ExchangeType         = "direct"
-	ContextTimeOut       = 5 * time.Second
 )
 
 const (

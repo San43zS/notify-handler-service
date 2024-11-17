@@ -8,7 +8,7 @@ import (
 	"Notify-handler-service/internal/server/launcher/rabbit"
 	"Notify-handler-service/internal/service"
 	"context"
-	"fmt"
+	"github.com/op/go-logging"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/errgroup"
 	"os"
@@ -16,6 +16,8 @@ import (
 	"sync"
 	"syscall"
 )
+
+var log = logging.MustGetLogger("server")
 
 type server struct {
 	servers []launcher.Server
@@ -56,13 +58,13 @@ func (s server) Serve(ctx context.Context) error {
 
 	case err = <-errCh:
 		if err != nil {
-			fmt.Errorf("app error: %v", err)
+			log.Criticalf("server stopped with error: %v", err)
 		}
 	}
 
 	stop()
 
-	fmt.Println("app: shutting down the server...")
+	log.Infof("app: shutting down the server...")
 	<-errCh
 
 	return err

@@ -5,11 +5,13 @@ import (
 	"Notify-handler-service/pkg/msghandler"
 	"context"
 	"fmt"
+	"github.com/op/go-logging"
 	"github.com/redis/go-redis/v9"
 	"golang.org/x/sync/errgroup"
-	"log"
 	"sync"
 )
+
+var log = logging.MustGetLogger("pubsub")
 
 type server struct {
 	handler msghandler.MsgResolver
@@ -46,29 +48,27 @@ func (s server) serve(ctx context.Context) error {
 	conn := s.pubSub
 	for {
 		if err := ctx.Err(); err != nil {
-			err := fmt.Errorf("PubSub listener stopped error: %v", err)
-			return err
+			log.Criticalf("PubSub listener stopped error: %v", err)
+			return fmt.Errorf("PubSub listener stopped error: %v", err)
 		}
 
 		m, err := conn.Receive(context.Background())
 		if err != nil {
-			log.Println("failed to receive message from pubSub:", err)
+			log.Infof("failed to receive message from pubSub: %v", err)
 			continue
 		}
 
 		if msg, ok := m.(*redis.Message); ok {
 			go func() {
-				test := msg.String()
-				fmt.Println(test)
 				message, err := Configuration([]byte(msg.Payload))
-
 				if err != nil {
-					fmt.Errorf("failed to parse message: %v", err)
+					log.Criticalf("failed to parse message: %v", err)
 					return
 				}
+
 				err = s.handler.ServeMSG(ctx, message)
 				if err != nil {
-					fmt.Errorf("failed to handle message: %v", err)
+					log.Criticalf("failed to handle message: %v", err)
 					return
 				}
 			}()

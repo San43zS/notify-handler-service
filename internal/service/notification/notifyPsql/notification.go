@@ -20,3 +20,7 @@ func New(storage psql.Store) notification.Notification {
 func (n Notify) Add(ctx context.Context, notification notify.Notification) error {
 	return n.storage.Notification().Add(ctx, notification)
 }
+
+func (n Notify) ChangeStatus(ctx context.Context, id string, status string) error {
+	return n.storage.Notification().ChangeStatus(ctx, id, status)
+}

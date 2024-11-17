@@ -3,7 +3,7 @@ package notification
 import "time"
 
 type Notification struct {
-	Id        int
+	Id        string
 	UserId    int
 	Status    string
 	Data      string

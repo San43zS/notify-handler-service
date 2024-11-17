@@ -2,23 +2,21 @@ package msg
 
 import "time"
 
+const (
+	CurrentStatus = "not_viewed"
+	OldStatus     = "viewed"
+)
+
 type MSG struct {
+	Type      string        `json:"type"`
+	UserId    int           `json:"user_id"`
+	Content   []byte        `json:"content"`
+	TTL       time.Duration `json:"ttl"`
+	CreatedAt time.Time     `json:"created_at"`
+	ExpiredAt time.Time     `json:"expired_at"`
+}
+
+type Expired struct {
 	Type string `json:"type"`
-
-	Content Data
-}
-
-type Data struct {
-	Data []byte `json:"data"`
-}
-
-type Message struct {
-	UserId    int
-	CreatedAt time.Time `json:"created_at"`
-	Data      Data
-}
-
-type Uint struct {
-	Type string `json:"type"`
-	Data []byte `json:"data"`
+	Id   string `json:"id"`
 }
