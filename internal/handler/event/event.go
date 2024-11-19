@@ -2,10 +2,11 @@ package event
 
 import (
 	"Notify-handler-service/internal/broker/rabbit"
+	message "Notify-handler-service/internal/handler/model/msg"
 	"Notify-handler-service/internal/handler/model/msg/event"
-	msg2 "Notify-handler-service/internal/handler/model/msg/parser/rabbitParser"
 	"Notify-handler-service/internal/service"
 	"Notify-handler-service/pkg/msghandler"
+	"encoding/json"
 	"fmt"
 )
 
@@ -16,11 +17,11 @@ type Handler struct {
 
 func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
 	eventParseFn := func(msg []byte) (string, error) {
-		m, err := msg2.New().Parse(msg)
-		if err != nil {
+		var common message.Common
+		if err := json.Unmarshal(msg, &common); err != nil {
 			return "", fmt.Errorf("error while parsing msg: %w", err)
 		}
-		return m.Type, nil
+		return common.Type, nil
 	}
 
 	handler := Handler{

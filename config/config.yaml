@@ -22,4 +22,4 @@ DB:
     DBNAME: "userdb"
 
     DRIVER: "postgres"
-    URLTEMPLATE: "host=%s port=%s dbname=%s notification=%s password=%s sslmode=disable"
+    URLTEMPLATE: "host=%s port=%s dbname=%s user=%s password=%s sslmode=disable"

@@ -5,7 +5,7 @@ import (
 	"Notify-handler-service/internal/service/api/notification"
 	"Notify-handler-service/internal/service/notification/notifyPsql"
 	notifyBroker "Notify-handler-service/internal/service/notification/notifyRabbit"
-	notifyStore "Notify-handler-service/internal/service/notification/notifyRedis"
+	notifyRedis "Notify-handler-service/internal/service/notification/notifyRedis"
 	"Notify-handler-service/internal/storage"
 	"Notify-handler-service/internal/storage/db/psql"
 	"Notify-handler-service/internal/storage/db/redis"
@@ -29,7 +29,7 @@ func New(repos storage.Storage, broker broker.Broker) Service {
 	return &service{
 		redis:        repos,
 		psql:         repos,
-		notifyRedis:  notifyStore.New(repos),
+		notifyRedis:  notifyRedis.New(repos),
 		notifyRabbit: notifyBroker.New(broker),
 		notifyPsql:   notifyPsql.New(repos),
 	}

@@ -1,4 +1,4 @@
-package rabbitParser
+package messageParser
 
 import (
 	"Notify-handler-service/internal/handler/model/msg"
@@ -7,8 +7,8 @@ import (
 )
 
 type Parser interface {
-	Parse([]byte) (msg.MSG, error)
-	Unparse(msg.MSG) ([]byte, error)
+	Parse([]byte) (msg.Message, error)
+	Unparse(msg.Message) ([]byte, error)
 }
 
 type parser struct {
@@ -18,17 +18,17 @@ func New() Parser {
 	return &parser{}
 }
 
-func (p parser) Parse(m []byte) (msg.MSG, error) {
-	var message msg.MSG
+func (p parser) Parse(m []byte) (msg.Message, error) {
+	var message msg.Message
 	test := string(m)
 	if err := json.Unmarshal([]byte(test), &message); err != nil {
-		return msg.MSG{}, fmt.Errorf("error while parsing(unmarshal) msg: %w", err)
+		return msg.Message{}, fmt.Errorf("error while parsing(unmarshal) msg: %w", err)
 	}
 
 	return message, nil
 }
 
-func (p parser) Unparse(m msg.MSG) ([]byte, error) {
+func (p parser) Unparse(m msg.Message) ([]byte, error) {
 	arr, err := json.Marshal(m)
 	if err != nil {
 		return nil, fmt.Errorf("error while parsing(marshal) msg: %w", err)
