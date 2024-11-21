@@ -5,10 +5,7 @@ import (
 )
 
 type EventParser func(msg []byte) (string, error)
-type (
-	HandlerFunc1 func(ctx context.Context, msg []byte) error
-)
-type HandlerFunc2 func(ctx context.Context) ([]byte, error)
+type HandlerFunc func(ctx context.Context, msg []byte) error
 
 type MsgResolver interface {
 	ServeMSG(ctx context.Context, msg []byte) error
@@ -16,18 +13,18 @@ type MsgResolver interface {
 
 type MsgHandler interface {
 	MsgResolver
-	Add(event string, fn HandlerFunc1)
+	Add(event string, fn HandlerFunc)
 }
 
 type handler struct {
 	eventParser EventParser
-	handlers    map[string]HandlerFunc1
+	handlers    map[string]HandlerFunc
 }
 
 func New(parser EventParser) MsgHandler {
 	return &handler{
 		eventParser: parser,
-		handlers:    make(map[string]HandlerFunc1),
+		handlers:    make(map[string]HandlerFunc),
 	}
 }
 
@@ -44,6 +41,6 @@ func (h *handler) ServeMSG(ctx context.Context, msg []byte) error {
 	return fn(ctx, msg)
 }
 
-func (h *handler) Add(event string, fn HandlerFunc1) {
+func (h *handler) Add(event string, fn HandlerFunc) {
 	h.handlers[event] = fn
 }

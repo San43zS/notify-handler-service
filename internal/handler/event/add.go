@@ -10,6 +10,7 @@ import (
 )
 
 func (h Handler) Add(ctx context.Context, msg []byte) error {
+
 	m, err := messageParser.New().Parse(msg)
 	if err != nil {
 		return err
@@ -17,7 +18,7 @@ func (h Handler) Add(ctx context.Context, msg []byte) error {
 
 	nID := encoding.New().NotificationID(m.Data.UserId)
 
-	notification := notification.Notification{
+	n := notification.Notification{
 		Id:        nID,
 		UserId:    m.Data.UserId,
 		Status:    mssg.CurrentStatus,
@@ -26,12 +27,12 @@ func (h Handler) Add(ctx context.Context, msg []byte) error {
 		ExpiredAt: m.Data.ExpiredAt,
 	}
 
-	err = h.srv.NotificationPsql().Add(ctx, notification)
+	err = h.srv.NotificationPsql().Add(ctx, n)
 	if err != nil {
 		return fmt.Errorf("error while adding notification to psql: %w", err)
 	}
 
-	err = h.srv.NotificationRedis().Add(ctx, notification)
+	err = h.srv.NotificationRedis().Add(ctx, n)
 	if err != nil {
 		return fmt.Errorf("error while adding notification to redis: %w", err)
 	}
