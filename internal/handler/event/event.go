@@ -8,14 +8,16 @@ import (
 	"Notify-handler-service/pkg/msghandler"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
 )
 
 type Handler struct {
 	srv    service.Service
 	router msghandler.MsgHandler
+	conn   *websocket.Conn
 }
 
-func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
+func New(srv service.Service, broker rabbit.Service, ws *websocket.Conn) msghandler.MsgHandler {
 	eventParseFn := func(msg []byte) (string, error) {
 		var common message.Common
 		if err := json.Unmarshal(msg, &common); err != nil {
@@ -27,6 +29,7 @@ func New(srv service.Service, broker rabbit.Service) msghandler.MsgHandler {
 	handler := Handler{
 		srv:    srv,
 		router: msghandler.New(eventParseFn),
+		conn:   ws,
 	}
 
 	handler.initHandler()

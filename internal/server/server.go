@@ -6,6 +6,7 @@ import (
 	"Notify-handler-service/internal/server/launcher"
 	redisPubSub "Notify-handler-service/internal/server/launcher/pubSub"
 	"Notify-handler-service/internal/server/launcher/rabbit"
+	"Notify-handler-service/internal/server/launcher/websocket"
 	"Notify-handler-service/internal/service"
 	"context"
 	"github.com/op/go-logging"
@@ -24,7 +25,9 @@ type server struct {
 }
 
 func New(srv service.Service, pubSub *redis.PubSub, broker broker.Broker) (launcher.Server, error) {
-	h := handler.New(srv, broker)
+	wsConn, _ := websocket.New()
+
+	h := handler.New(srv, broker, wsConn)
 
 	s := &server{
 		servers: []launcher.Server{
