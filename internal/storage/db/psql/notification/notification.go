@@ -1,6 +1,7 @@
 package notification
 
 import (
+	message "Notify-handler-service/internal/handler/model/msg"
 	notify "Notify-handler-service/internal/model/notification"
 	"Notify-handler-service/internal/storage/api/notification"
 	"context"
@@ -49,4 +50,72 @@ func (r repository) ChangeStatus(ctx context.Context, id string, status string) 
 	}
 
 	return nil
+}
+
+const (
+	CurrentStatus = "not_viewed"
+	OldStatus     = "viewed"
+)
+
+func (r repository) GetCurrent(ctx context.Context, userID int) ([]message.Notify, error) {
+	query := `SELECT user_id, notification, created_at, expired_at FROM notify WHERE user_id = $1 AND status = $2`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return []message.Notify{}, fmt.Errorf("failed to prepare query: %w", err)
+	}
+
+	rows, err := stmt.QueryContext(ctx, userID, CurrentStatus)
+	if err != nil {
+		return []message.Notify{}, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	var notifications []message.Notify
+	for rows.Next() {
+		var existing message.Notify
+		err := rows.Scan(
+			&existing.UserId,
+			&existing.Content,
+			&existing.CreatedAt,
+			&existing.ExpiredAt,
+		)
+		if err != nil {
+			return []message.Notify{}, fmt.Errorf("failed to scan row: %w", err)
+		}
+		notifications = append(notifications, existing)
+	}
+
+	return notifications, nil
+}
+
+func (r repository) GetOld(ctx context.Context, userID int) ([]message.Notify, error) {
+	query := `SELECT user_id, notification, created_at FROM notify WHERE user_id = $1 AND status = $2`
+
+	stmt, err := r.db.Prepare(query)
+	if err != nil {
+		return []message.Notify{}, fmt.Errorf("failed to prepare query: %w", err)
+	}
+
+	rows, err := stmt.QueryContext(ctx, userID, OldStatus)
+	if err != nil {
+		return []message.Notify{}, fmt.Errorf("failed to execute query: %w", err)
+	}
+	defer rows.Close()
+
+	var notifications []message.Notify
+	for rows.Next() {
+		var existing message.Notify
+		err := rows.Scan(
+			&existing.UserId,
+			&existing.Content,
+			&existing.CreatedAt,
+		)
+		if err != nil {
+			return []message.Notify{}, fmt.Errorf("failed to scan row: %w", err)
+		}
+		notifications = append(notifications, existing)
+	}
+
+	return notifications, nil
 }

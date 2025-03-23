@@ -54,13 +54,14 @@ func (s server) serve(ctx context.Context) error {
 
 		m, err := conn.Receive(context.Background())
 		if err != nil {
-			log.Infof("failed to receive message from pubSub: %v", err)
+			log.Criticalf("failed to receive message from pubSub: %v", err)
 			continue
 		}
 
 		if msg, ok := m.(*redis.Message); ok {
 			go func() {
-				message, err := Configuration([]byte(msg.Payload))
+				test := msg.Payload
+				message, err := Configuration([]byte(test))
 				if err != nil {
 					log.Criticalf("failed to parse message: %v", err)
 					return

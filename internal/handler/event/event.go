@@ -19,8 +19,9 @@ type Handler struct {
 
 func New(srv service.Service, broker rabbit.Service, ws *websocket.Conn) msghandler.MsgHandler {
 	eventParseFn := func(msg []byte) (string, error) {
+		tet := string(msg)
 		var common message.Common
-		if err := json.Unmarshal(msg, &common); err != nil {
+		if err := json.Unmarshal([]byte(tet), &common); err != nil {
 			return "", fmt.Errorf("error while parsing msg: %w", err)
 		}
 		return common.Type, nil
@@ -40,4 +41,6 @@ func New(srv service.Service, broker rabbit.Service, ws *websocket.Conn) msghand
 func (h Handler) initHandler() {
 	h.router.Add(event.AddNotify, h.Add)
 	h.router.Add(event.ChangeExpired, h.ChangeExpired)
+	h.router.Add(event.GetCurrentNotify, h.GetCurrentNotify)
+	h.router.Add(event.GetOldNotify, h.GetOld)
 }

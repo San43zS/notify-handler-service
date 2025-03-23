@@ -32,9 +32,17 @@ type Expired struct {
 
 type Message struct {
 	Type string `json:"type"`
-	Data MSG    `json:"data"`
+	Data []byte `json:"data"`
+	TTL  int    `json:"ttl"`
 }
 
 type Common struct {
 	Type string `json:"type"`
+	Data []byte `json:"data"`
+	TTL  int    `json:"ttl"`
+}
+
+type STRUCT struct {
+	Type string   `json:"type"`
+	Data []Notify `json:"data"`
 }

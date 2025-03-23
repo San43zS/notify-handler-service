@@ -13,9 +13,9 @@ const (
 
 const (
 	HandlerServiceConsumer = "HandlerServiceConsumer"
-	ProducerQueueName      = "greenQueue"
+	ProducerQueueName      = "redQueue"
 	ProducerExchangeName   = "test"
-	ProducerRoutingKey     = "green"
+	ProducerRoutingKey     = "redQueue"
 )
 
 type Config struct {

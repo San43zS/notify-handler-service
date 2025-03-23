@@ -5,7 +5,10 @@ import (
 	"Notify-handler-service/internal/broker/rabbit/consumer"
 	"Notify-handler-service/internal/broker/rabbit/producer"
 	"context"
+	"github.com/op/go-logging"
 )
+
+var log = logging.MustGetLogger("NotificationRabbit")
 
 type RespCons struct {
 	p producer.Producer
@@ -20,16 +23,19 @@ func New(broker broker.Broker) RespCons {
 }
 
 func (r RespCons) Add(ctx context.Context) ([]byte, error) {
-	consume, err := r.c.Consume(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return consume, nil
+	//err := r.p.Produce(ctx, nil)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//return consume, nil
+	return nil, nil
 }
 
 func (r RespCons) AddExpired(ctx context.Context, msg []byte) error {
-	err := r.p.Produce(ctx, msg)
+
+	err := r.p.Produ(ctx, msg)
 	if err != nil {
+		log.Criticalf("failed to publish a message: %v", err)
 		return err
 	}
 

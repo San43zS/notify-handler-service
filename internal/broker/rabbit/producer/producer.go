@@ -3,11 +3,14 @@ package producer
 import (
 	"Notify-handler-service/internal/broker/rabbit/config"
 	"context"
+	"github.com/op/go-logging"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+var log = logging.MustGetLogger("producer")
+
 type Producer interface {
-	Produce(ctx context.Context, arr []byte) error
+	Produ(ctx context.Context, arr []byte) error
 }
 
 type producer struct {
@@ -20,8 +23,7 @@ func New(dial *amqp.Channel) Producer {
 	}
 }
 
-func (p producer) Produce(ctx context.Context, arr []byte) error {
-
+func (p producer) Produ(ctx context.Context, arr []byte) error {
 	body := arr
 	err := p.dial.PublishWithContext(ctx,
 		config.ProducerExchangeName, // exchange
@@ -34,7 +36,7 @@ func (p producer) Produce(ctx context.Context, arr []byte) error {
 		})
 
 	if err != nil {
-
+		log.Criticalf("failed to publish a message: %v", err)
 		return err
 	}
 

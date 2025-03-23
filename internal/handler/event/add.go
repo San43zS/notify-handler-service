@@ -7,6 +7,7 @@ import (
 	"Notify-handler-service/pkg/encoding"
 	"context"
 	"fmt"
+	"time"
 )
 
 func (h Handler) Add(ctx context.Context, msg []byte) error {
@@ -16,15 +17,19 @@ func (h Handler) Add(ctx context.Context, msg []byte) error {
 		return err
 	}
 
-	nID := encoding.New().NotificationID(m.Data.UserId)
+	nID := encoding.New().NotificationID(1)
+
+	timeNOW := time.Now()
+	timeEXP := timeNOW.Add(time.Duration(m.TTL) * time.Second)
 
 	n := notification.Notification{
 		Id:        nID,
-		UserId:    m.Data.UserId,
+		UserId:    43,
 		Status:    mssg.CurrentStatus,
-		Data:      string(m.Data.Content),
-		CreatedAt: m.Data.CreatedAt,
-		ExpiredAt: m.Data.ExpiredAt,
+		Data:      string(m.Data),
+		TTL:       time.Duration(m.TTL) * time.Second,
+		CreatedAt: timeNOW,
+		ExpiredAt: timeEXP,
 	}
 
 	err = h.srv.NotificationPsql().Add(ctx, n)
